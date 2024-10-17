@@ -1,0 +1,203 @@
+/* img {
+    width: 100%;
+   
+}
+
+body {
+    color: var(--text-color);
+}
+.heading{
+    margin-top: 50px;
+    text-align: center;
+} */
+ 
+.title{
+    margin-top: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 20px;
+    background-color: var(--main-color);
+    /* align-items: center; */
+}
+.title h2{
+    font-size: 2rem;
+    color: white;
+    text-align: center;
+ 
+}
+.products{
+    background-image: url(/public/about_background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.product_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, auto));
+    gap: 1.5rem;
+    margin-top: 4rem;
+
+}
+
+.product_container .box {
+    position: relative;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+    padding-bottom: 30px;
+}
+
+.product_container .box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+
+.product_container img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    background: #f1f1f1;
+    border-width: 0;
+    border-radius: 0.5rem;
+    
+}
+.product_container img:hover{
+    cursor: pointer;
+}
+
+.product_container .box .content h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin: 0.5rem 0 0.5rem;
+    margin-bottom: 10px;
+    margin-left: 5px;
+}
+
+.product_container .box .content {
+    display: flex;
+    /* align-items: left;
+    justify-content: flex-start; */
+    flex-direction: column; /* Align title and address vertically */
+    align-items: flex-start; /* Align both title and address to the left */
+    margin-bottom: 30px; /* Added margin bottom */
+}
+
+.product_container .box .content span {
+    /* padding: 0 1rem;
+    color: #454242;
+    font-weight: 500; */
+    display: flex;
+    align-items: center;
+    color: #454242;
+    font-weight: 500;
+}
+.product_container .box .content h3:hover {
+    cursor: pointer;
+    color: var(--main-color);
+}
+
+.product_container .box .content box-icon {
+    margin-right: 10px; /* Adds spacing between the icon and the text */
+}
+
+.product_container .box .actions {
+    display: flex;
+    justify-content: space-between; /* Ensures buttons are on opposite sides */
+    margin-top: 10px;
+}
+
+.product_container .box .actions a {
+    padding: 5px 10px;
+    border-radius: 18px;
+    height: 36px;
+    text-transform: capitalize;
+    font-weight: 500;
+    width: 100px;
+    border-radius: 18px;
+    border-width: 0;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s, box-shadow 0.3s;
+}
+
+.project_info .description {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #454242;
+    flex-grow: 1;
+    height: 4em; /* Ensures consistent height */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.donate_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--main-color);
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 36px;
+    width: 100px;
+    border-radius: 18px;
+    border-width: 0;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.8s, box-shadow 0.3s;
+}
+
+.donate_button:hover {
+    background-color: var(--main-color);
+    transform: translateX(-50%);
+    box-shadow: 0 0 1rem var(--main-color);
+    cursor: pointer;
+}
+.donate_button:active {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+@media(max-width:900px){
+    .card_container{
+        grid-template-columns: repeat(auto-fit,minmax(240px,auto));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    .project_card{
+        padding-bottom: 25px;
+    }
+    .product_container img {
+        height: 200px;
+    }
+    .title {
+        margin-top: 120px;
+    }
+    .title h2{
+        font-size: 1.5rem;
+    }
+}
+
+@media(max-width:500px){
+    .card_container{
+        grid-template-columns: repeat(auto-fit,minmax(160px,auto));
+    }
+    .product_container img {
+        height: 150px;
+    }
+}
+
+
