@@ -1,8 +1,0 @@
-[package]
-org = "isurika_gunasekara"
-name = "athwela"
-version = "0.1.0"
-distribution = "2201.10.2"
-
-[build-options]
-observabilityIncluded = true
