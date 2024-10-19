@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import styles from '../styles/projectRegistration.module.css';
-// import {app} from '../firebase';
-import { db, storage, auth } from '../firebase';
-// import { doc, setDoc } from "firebase/firestore";
-import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import { useNewProject } from "../../hooks/newProject";
 
 const ProjectRegistration = () => {
+    const { project, loading, error, newProject } = useNewProject();
+
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(0);
@@ -25,103 +23,87 @@ const ProjectRegistration = () => {
     const [checkbox, setCheckbox] = useState(false);
     const today = moment().format('YYYY-MM-DD');
 
-
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const handleProject = async (e) => {
         e.preventDefault();
 
         if (!projectType) {
-            console.log("Please select a project type");
             toast.error("Select a project type");
             return;
         }
 
-        if (checkbox === false) {
-            console.log("Please agree to the terms");
+        if (!checkbox) {
             toast.error("Please agree to the terms");
             return;
         }
 
         if (!/^\d{10}$/.test(phone)) {
-            console.log("Invalid phone number");
             toast.error("Invalid phone number");
             return;
         }
 
-        if (bank === "") {
-            console.log("Please select a valid bank");
+        if (!bank) {
             toast.error("Please select a bank");
             return;
         }
 
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
+        //setLoading(true);
 
-                setLoading(true);
+        try {
+            // Image upload - converting to base64 strings for Ballerina API
+            const imageBase64Urls = await Promise.all(
+                [...images].map(async (image) => {
+                    return await convertToBase64(image);
+                })
+            );
 
-                try {
-                    const imageUrls = await Promise.all(
-                        [...images].map(async (image) => {
-                            const imageRef = ref(storage, `images/${image.name}`);
-                            await uploadBytes(imageRef, image);
-                            return await getDownloadURL(imageRef);
-                        })
-                    );
+            const evidenceBase64Urls = await Promise.all(
+                [...evidence].map(async (file) => {
+                    return await convertToBase64(file);
+                })
+            );
 
-                    const evidenceUrls = await Promise.all(
-                        [...evidence].map(async (evidence) => {
-                            const evidenceRef = ref(storage, `evidence/${evidence.name}`);
-                            await uploadBytes(evidenceRef, evidence);
-                            return await getDownloadURL(evidenceRef);
-                        })
-                    );
+            // Send data to Ballerina backend
+            const projectData = {
+                projectName: projectName,
+                description: description,
+                amount: amount,
+                deadline: deadline,
+                phone: phone,
+                images: imageBase64Urls, // base64 encoded image data
+                evidence: evidenceBase64Urls, // base64 encoded evidence documents
+                projectType: projectType,
+                bankDetails: {
+                    bankHolder: bankHolder,
+                    bank: bank,
+                    branch: branch,
+                    accNumber: accNumber
+                },
+                verified: false,
+                owner: "user_uid_placeholder", // Replace with real user ID
+            };
 
-                    const collectionName = projectType === 'healthCare' ? "Health Care" : "Disaster Relief";
+             
+            await newProject(projectData);
+            
 
-                    const docRef = await addDoc(collection(db, collectionName), {
-                        owner: user.uid,
-                        projectName: projectName,
-                        description: description,
-                        amount: amount,
-                        raised: raised,
-                        deadline: deadline,
-                        phone: phone,
-                        images: imageUrls,
-                        evidence: evidenceUrls,
-                        projectType: projectType,
-                        bankDetails: {
-                            bankHolder: bankHolder,
-                            bank: bank,
-                            branch: branch,
-                            accNumber: accNumber
-                        },
-                        verified: false,
-                    });
+        } catch (error) {
+            console.error('Error registering project:', error);
+            toast.error('Failed to register the project');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-                    console.log("Document written with ID: ", docRef.id);
-                    toast.success('Project registered successfully');
-
-                    const userDocRef = doc(db, "users", user.uid);
-                    await updateDoc(userDocRef, {
-                        campaigns: [...(user.campaigns || []), { type:collectionName, project:docRef.id, date: today}]
-                    });
-
-
-                } catch (error) {
-                    console.error('Error uploading images:', error);
-                    toast.error('Failed to upload images');
-                    return;
-                } finally {
-                    setLoading(false);
-                }
-            } else {
-                toast.error("No user is logged in");
-            }
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
         });
-
-
-    }
+    };
 
     const handleProjectTypeChange = (e) => {
         setProjectType(e.target.value);
@@ -133,7 +115,7 @@ const ProjectRegistration = () => {
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                <form onSubmit={handleProject} method="post" enctype="multipart/form-data">
+                <form onSubmit={handleProject} method="post" encType="multipart/form-data">
                     <div className={styles.radioGroup}>
                         <div className={styles.form_group_tick}>
                             <input className={styles.form_check_input} type="radio" name="inlineRadioOptions" id="inlineRadio1" value="healthCare" onChange={handleProjectTypeChange} />
@@ -201,10 +183,8 @@ const ProjectRegistration = () => {
                     <button className={styles.button} type="submit">Submit</button>
                 </form>
             )}
-
         </section>
-
     );
-}
+};
 
 export default ProjectRegistration;

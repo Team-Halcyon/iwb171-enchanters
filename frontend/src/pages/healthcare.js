@@ -1,43 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useFirebase } from '../firebaseContext';
-import { collection, onSnapshot } from "firebase/firestore";
 import styles from '../styles/healthcare.module.css';
 import { useNavigate } from 'react-router-dom';
 
-
 const Healthcare = () => {
-    const { db } = useFirebase(); // Access Firestore instance from context
     const [projects, setProjects] = useState([]);
-    const navigate = useNavigate(); // For navigation
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(
-            collection(db, "Health Care"),
-            (snapshot) => {
-                const projectsArray = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    name: doc.data().projectName,
-                    phone: doc.data().phone,
-                    description: doc.data().description,
-                    need: doc.data().amount,
-                    raised: doc.data().raised,
-                    owner: doc.data().owner,
-                    imageUrls: doc.data().images,
-                    verified: doc.data().verified,
-                    projectType: doc.data().projectType,    // Add projectType field to the project object
-                    bankDetails: doc.data().bankDetails,    // Add bankDetails field to the project object
-                }));
-
-                setProjects(projectsArray);
-                console.log(projectsArray);
+        const fetchProject = async () => {
+          try {
+            const response = await fetch('http://localhost:9090/fundraising/healthcare');
+            if (!response.ok) {
+              throw new Error('Failed to fetch events');
             }
-        );
+            const data = await response.json();
+            setProjects(data); 
+          } catch (error) {
+            console.error('Error fetching projects', error);
+          }
+        };
+    
+        fetchProject(); 
+      }, []); 
 
-        // Cleanup function to unsubscribe from the listener when the component unmounts
-        return () => unsubscribe();
-    }, [db]);
-
-    // Function to navigate to the project details page and pass project data
+    // Function to navigate to the project details page
     const handleNavigate = (project) => {
         navigate('/project', { state: { project } }); // Pass the project object in the state
     };
@@ -54,10 +40,10 @@ const Healthcare = () => {
                         <div className={styles.image_container}>
                             {project.verified ? (
                                 <img src="/images/verified.jpg" alt="verified" className={styles.verified_icon} />
-                            ) : 
-                                <img src="/images/report.png" alt='report' className={`${styles.verified_icon} ${styles.report_icon}`}/>
-                            }
-                            {/* <img src="/images/kidneyPatient.jpg" alt="project_image" className={styles.project_image} /> */}
+                            ) : (
+                                <img src="/images/report.png" alt="report" className={`${styles.verified_icon} ${styles.report_icon}`} />
+                            )}
+
                             {project.imageUrls && project.imageUrls.length > 0 ? (
                                 <img src={project.imageUrls[0]} alt={project.name} className={styles.project_image} />
                             ) : (
