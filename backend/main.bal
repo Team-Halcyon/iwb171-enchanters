@@ -2,6 +2,7 @@ import ballerinax/mysql;
 import ballerina/sql;
 import ballerina/http;
 import ballerinax/mysql.driver as _;
+import ballerina/time;
 
 configurable DataBaseConfig databaseConfig = ?;
 final mysql:Client fundraisingDb = check initDbClient();
@@ -39,20 +40,20 @@ service /fundraising on fundraisingListener {
             
         return http:CREATED;
     }
-
     
-//     resource function get projects/[int id]() returns FundraisingProject|ProjectNotFound|error {
-//         FundraisingProject|error result = fundraisingDb->queryRow(`SELECT * FROM projects WHERE id = ${id}`);
-//         if result is sql:NoRowsError {
-//             ErrorDetails errorDetails = buildErrorPayload(string `id: ${id}`, string `projects/${id}`);
-//             ProjectNotFound projectNotFound = {
-//                 body: errorDetails
-//             };
-//             return projectNotFound;
-//         } else {
-//             return result;
-//         }
-//     }
+    
+    resource function get projects/[int id]() returns NewProject|ProjectNotFound|error {
+        NewProject|error result = fundraisingDb->queryRow(`SELECT * FROM projects WHERE project_id = ${id}`);
+        if result is sql:NoRowsError {
+            ErrorDetails errorDetails = buildErrorPayload(string `id: ${id}`, string `projects/${id}`);
+            ProjectNotFound projectNotFound = {
+                body: errorDetails
+            };
+            return projectNotFound;
+        } else {
+            return result;
+        }
+    }
 
     
     resource function get healthcare() returns NewProject[]|error {
@@ -62,11 +63,11 @@ service /fundraising on fundraisingListener {
     }
 }
 
-// function buildErrorPayload(string msg, string path) returns ErrorDetails {
-//     return {
-//         message: msg,
-//         timeStamp: time:utcNow(),
-//         details: string `uri=${path}`
-//     };
+function buildErrorPayload(string msg, string path) returns ErrorDetails {
+    return {
+        message: msg,
+        timeStamp: time:utcNow(),
+        details: string `uri=${path}`
+    };
 }
 
