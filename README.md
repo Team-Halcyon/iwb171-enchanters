@@ -1,6 +1,6 @@
-# 🌍 Athwela - Fundraising Platform 💙
+# 💙 අත්වැල - Fundraising Platform 
 
-**Athwela** is a fundraising platform designed to connect **donors** and **donees** seamlessly. The platform ensures trust and transparency, enabling donees to create projects quickly and donors to contribute with confidence.
+**අත්වැල** is a fundraising platform designed to connect **donors** and **donees** seamlessly. The platform ensures trust and transparency, enabling donees to create projects quickly and donors to contribute with confidence.
 
 ## 🚀 Tech Stack
 
@@ -17,7 +17,7 @@
 
 ## 💡 Motivation
 
-**Athwela** was developed with empathy and a focus on promoting **social wellness**. Our goal is to make fundraising transparent, trustworthy, and efficient.
+**අත්වැල** was developed with empathy and a focus on promoting **social wellness**. Our goal is to make fundraising transparent, trustworthy, and efficient.
 
 ## 🖥️ Project Setup
 
