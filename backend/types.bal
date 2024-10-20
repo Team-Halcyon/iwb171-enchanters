@@ -25,14 +25,13 @@ type NewProject record {|
     string[] images;
     string[] evidence;
     string projectType;
-    Bank bank;
+    Bank bankDetails;
     boolean verified;
     string owner;
     time:Date createdDate;
-    decimal raised;
-    string city;
-    string district;
-    string address;
+    string? city;
+    string? district;
+    string? address;
 |};
 
 type Project record {| 

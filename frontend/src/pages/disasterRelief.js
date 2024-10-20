@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/healthcare.module.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const DisasterRelief = () => {
     const [projects, setProjects] = useState([]);
@@ -8,20 +9,17 @@ const DisasterRelief = () => {
 
     useEffect(() => {
         const fetchDisasterReleifProject = async () => {
-          try {
-            const response = await fetch('http://localhost:9090/fundraising/disaster');
-            if (!response.ok) {
-              throw new Error('Failed to fetch events');
+            try {
+              const response = await axios.get('http://localhost:9090/fundraising/disaster');
+              setProjects(response.data); 
+            } catch (error) {
+              console.error('Error fetching projects', error);
             }
-            const data = await response.json();
-            setProjects(data); 
-          } catch (error) {
-            console.error('Error fetching projects', error);
-          }
-        };
-    
-        fetchDisasterReleifProject(); 
-      }, []); 
+          };
+          
+          fetchDisasterReleifProject();
+        }, []);
+          
 
     const handleNavigate = (project) => {
         navigate('/project', { state: { project } }); // Pass the project object in the state

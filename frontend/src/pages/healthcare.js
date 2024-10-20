@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/healthcare.module.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 const Healthcare = () => {
@@ -9,19 +10,16 @@ const Healthcare = () => {
 
     useEffect(() => {
         const fetchAdultHomes = async () => {
-          try {
-            const response = await fetch('http://localhost:9090/fundraising/adultHomes');
-            if (!response.ok) {
-              throw new Error('Failed to fetch events');
+            try {
+              const response = await axios.get('http://localhost:9090/fundraising/adultHomes');
+              setProjects(response.data); 
+            } catch (error) {
+              console.error('Error fetching projects', error);
             }
-            const data = await response.json();
-            setProjects(data); 
-          } catch (error) {
-            console.error('Error fetching projects', error);
-          }
-        };
-    
-        fetchAdultHomes(); 
+          };
+          
+          fetchAdultHomes();
+          
       }, []); 
 
     // Function to navigate to the project details page and pass project data

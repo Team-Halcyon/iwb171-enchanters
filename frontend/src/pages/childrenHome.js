@@ -9,19 +9,15 @@ const ChildernHome = () => {
     useEffect(() => {
         const fetchChildrenHomes = async () => {
           try {
-            const response = await fetch('http://localhost:9090/fundraising/childrenHomes');
-            if (!response.ok) {
-              throw new Error('Failed to fetch events');
-            }
-            const data = await response.json();
-            setProjects(data); 
+            const response = await axios.get('http://localhost:9090/fundraising/childrenHomes');
+            setProjects(response.data); 
           } catch (error) {
             console.error('Error fetching projects', error);
           }
         };
-    
+      
         fetchChildrenHomes(); 
-      }, []); 
+      }, []);
 
     return (
         <div>

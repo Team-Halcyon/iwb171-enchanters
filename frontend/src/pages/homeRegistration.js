@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../styles/homeRegistration.module.css";
 import { toast } from "react-toastify";
 import moment from "moment";
+import axios from "axios";
 
 const HomeRegistration = () => {
   const [homeName, setHomeName] = useState("");
@@ -10,7 +11,7 @@ const HomeRegistration = () => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
-//   const [email, setEmail] = useState("");
+  //   const [email, setEmail] = useState("");
   const [bankHolder, setBankHolder] = useState("");
   const [bank, setBank] = useState("");
   const [branch, setBranch] = useState("");
@@ -35,7 +36,9 @@ const HomeRegistration = () => {
     }
 
     if (!checkbox) {
-      toast.error("You must agree to the terms and conditions before signing up.");
+      toast.error(
+        "You must agree to the terms and conditions before signing up."
+      );
       return;
     }
 
@@ -64,7 +67,7 @@ const HomeRegistration = () => {
         phone: tel,
         images: imageBase64Urls, // base64 encoded image data
         projectType: homeType === "childHome" ? "children" : "adults",
-        bank: {
+        bankDetails: {
           bankHolder: bankHolder,
           bank: bank,
           branch: branch,
@@ -78,15 +81,14 @@ const HomeRegistration = () => {
         owner: "user_uid_placeholder", // Replace with real user ID
       };
 
-      const response = await fetch("http://localhost:9090/fundraising/newProject", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(projectData),
-      });
+      const response = await axios.post(
+        "http://localhost:9090/fundraising/newProject",
+        projectData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
-      if (!response.ok) throw new Error("Failed to register project");
-
-      const result = await response.json();
       toast.success("Project registered successfully!");
     } catch (error) {
       toast.error("Failed to register the project");
@@ -106,7 +108,6 @@ const HomeRegistration = () => {
 
   const handleImageChange = (e) => setImages(e.target.files);
   const handleHomeTypeChange = (e) => setHomeType(e.target.value);
-
 
   return (
     <section className={styles.form_container}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from '../styles/projectRegistration.module.css';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import axios from 'axios';
 
 const ProjectRegistration = () => {
 
@@ -64,7 +65,7 @@ const ProjectRegistration = () => {
             const projectData = {
                 projectName: projectName,
                 description: description,
-                amount: amount,
+                amount: amount.parseFloat(),
                 deadline: deadline,
                 phone: phone,
                 images: imageBase64Urls, // base64 encoded image data
@@ -82,17 +83,20 @@ const ProjectRegistration = () => {
             };
 
              
-            const response = await fetch('http://localhost:9090/fundraising/newProject', {
-                method: 'POST',
-                headers: {
+            try {
+                const response = await axios.post('http://localhost:9090/fundraising/newProject', projectData, {
+                  headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(projectData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to register project');
-            }
+                  },
+                });
+              
+                toast.success('Project registered successfully!');
+              } catch (error) {
+                toast.error('Failed to register the project');
+              } finally {
+                setLoading(false);
+              }
+              
 
             const result = await response.json();
             console.log('Project registered successfully:', result);
@@ -149,17 +153,17 @@ const ProjectRegistration = () => {
                         <label htmlFor="amount">Amount to Raise:</label>
                         <input type="number" id="amount" name="amount" required onChange={(e) => setAmount(e.target.value)} />
                     </div>
-                    <div className={styles.form_group}>
+                    {/* <div className={styles.form_group}>
                         <label htmlFor="raised">Amount Raised So Far:</label>
                         <input type="number" id="raised" name="raised" required onChange={(e) => setRaised(e.target.value)} />
-                    </div>
+                    </div> */}
                     <div className={styles.form_group}>
                         <label htmlFor="deadline">Deadline:</label>
                         <input type="date" id="deadline" name="deadline" required onChange={(e) => setDeadline(e.target.value)} />
                     </div>
                     <div className={styles.form_group}>
                         <label htmlFor="phone">Telephone Number:</label>
-                        <input type="tel" id="phone" name="phone" required onChange={(e) => setPhone(e.target.value)} />
+                        <input type="text" id="phone" name="phone" required onChange={(e) => setPhone(e.target.value)} />
                     </div>
                     <div className={styles.form_group}>
                         <label htmlFor="images">Images:</label>

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/styles.module.css';
 import { Link } from 'react-router-dom';
-
+import { auth } from '../firebase';
 import { useLocation } from 'react-router-dom';
+// import { doc, getDoc} from 'firebase/firestore';
 
 const Home = () => {
   const [user, setUser] = useState(null);

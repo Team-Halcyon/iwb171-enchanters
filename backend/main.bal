@@ -16,15 +16,15 @@ configurable string gDriveAccessToken = ?;
 configurable string gDriveFolderId = ?;
 
 @http:ServiceConfig {
-    cors: {
-        allowOrigins: ["http://localhost:3000"], 
-        allowHeaders: ["*"], 
-        allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS","UPDATE"], 
-        allowCredentials: false,
-        exposeHeaders: [],
-        maxAge: 3600 
+        cors: {
+            allowOrigins: ["http://localhost:3000"], 
+            allowHeaders: ["*"], 
+            allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "UPDATE"], 
+            allowCredentials: false,
+            exposeHeaders: [],
+            maxAge: 3600 
+        }
     }
-}
 service /fundraising on fundraisingListener {
 
     @http:ResourceConfig {
@@ -34,8 +34,8 @@ service /fundraising on fundraisingListener {
     }
     resource function post newProject(NewProject payload) returns http:Created|error {
         // Insert into Project table
-        _ = check fundraisingDb->execute(`INSERT INTO Project (user_id, project_type, create_timestamp, account_no, bank, branch, account_name, phone_number)
-                VALUES (${payload.owner}, ${payload.projectType}, ${payload.createdDate}$, ${payload.bank.accNumber}, ${payload.bank.bank}, ${payload.bank.branch}, ${payload.bank.bankHolder}, ${payload.phone});`);
+        _ = check fundraisingDb->execute(`INSERT INTO Project (user_id, project_type, create_timestamp, account_no, bankDetails, branch, account_name, phone_number)
+                VALUES (${payload.owner}, ${payload.projectType}, ${payload.createdDate}$, ${payload.bankDetails.accNumber}, ${payload.bankDetails.bank}, ${payload.bankDetails.branch}, ${payload.bankDetails.bankHolder}, ${payload.phone});`);
 
         // Fetch last inserted project ID
         int result = check fundraisingDb->queryRow(`SELECT LAST_INSERT_ID() AS project_id`, int);

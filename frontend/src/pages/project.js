@@ -4,6 +4,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import 'boxicons';
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { db } from '../firebase';
+import { auth } from '../firebase';
+import axios from 'axios';
+
 
 
 const Project = () => {
@@ -17,6 +22,7 @@ const Project = () => {
     const [comments, setComments] = useState(''); // New comment input state
     const [allComments, setAllComments] = useState([]); // Store all comments
     const [email, setEmail] = useState(''); 
+    const [campaign, setCampaign] = useState(null);
 
     console.log(project);
     
@@ -26,16 +32,13 @@ const Project = () => {
         
         const fetchProject = async () => {
             try {
-            const response = await fetch('http://localhost:9090/fundraising/projects/${project.owner}');
-            if (!response.ok) {
-                throw new Error('Failed to fetch events');
-            }
-            const data = await response.json();
-            setProjects(data); 
+              const response = await axios.get(`http://localhost:9090/fundraising/projects/${project.owner}`);
+              setCampaign(response.data); 
             } catch (error) {
-            console.error('Error fetching projects', error);
+              console.error('Error fetching projects', error);
             }
-        };
+          };
+          
             
         // const collectionName = project.projectType === "healthCare" ? "Health Care" : "Disaster Relief";
 

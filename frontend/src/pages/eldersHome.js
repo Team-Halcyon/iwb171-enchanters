@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '../styles/elders.module.css';
 import 'boxicons';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 const EldersHome = () => {
@@ -11,20 +12,16 @@ const EldersHome = () => {
 
     useEffect(() => {
         const fetchAdultHomes = async () => {
-          try {
-            const response = await fetch('http://localhost:9090/fundraising/adultHomes');
-            if (!response.ok) {
-              throw new Error('Failed to fetch events');
+            try {
+              const response = await axios.get('http://localhost:9090/fundraising/adultHomes');
+              setProjects(response.data); 
+            } catch (error) {
+              console.error('Error fetching projects', error);
             }
-            const data = await response.json();
-            setProjects(data); 
-          } catch (error) {
-            console.error('Error fetching projects', error);
-          }
-        };
-    
-        fetchAdultHomes(); 
-      }, []); 
+          };
+          
+          fetchAdultHomes();
+        }, []); 
 
     const handleNavigate = (project) => {
         navigate('/singleHome', { state: { project } });
