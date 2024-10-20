@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/project.module.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
-import { db, auth } from '../firebase';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import 'boxicons';
@@ -25,23 +23,20 @@ const Project = () => {
     const collectionName = project.projectType === "healthCare" ? "Health Care" : "Disaster Relief";
 
     useEffect(() => {
-        const fetchOwnerName = async () => {
+        
+        const fetchProject = async () => {
             try {
-                const docRef = doc(db, "users", project.owner);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const owner = docSnap.data().name;
-                    const email = docSnap.data().email;
-                    setOwnerName(owner);
-                    setEmail(email);
-                } else {
-                    console.log("No such owner document!");
-                }
+            const response = await fetch('http://localhost:9090/fundraising/projects/${project.owner}');
+            if (!response.ok) {
+                throw new Error('Failed to fetch events');
+            }
+            const data = await response.json();
+            setProjects(data); 
             } catch (error) {
-                console.error("Error fetching owner name:", error);
+            console.error('Error fetching projects', error);
             }
         };
-
+            
         // const collectionName = project.projectType === "healthCare" ? "Health Care" : "Disaster Relief";
 
         const fetchImageUrls = async () => {
@@ -74,7 +69,7 @@ const Project = () => {
             }
         };
 
-        fetchOwnerName();
+        fetchProject();
         fetchImageUrls();
         fetchComments();
     }, [project, project.owner, project.id, collectionName]);
