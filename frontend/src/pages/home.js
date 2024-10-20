@@ -4,20 +4,20 @@ import { Link } from 'react-router-dom';
 
 import { useLocation } from 'react-router-dom';
 
-// const Home = () => {
-//   const [user, setUser] = useState(null);
-//   useEffect(() => {
-//     const unsubscribe = auth.onAuthStateChanged((user) => {
-//       if (user) {
-//         setUser(user);
-//       } else {
-//         setUser(null);
-//       }
-//     });
-//     return () => unsubscribe();
-//   }, []);
+const Home = () => {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
-//   console.log(user);
+  console.log(user);
 
 // const getDocument = async (docId) => {
 //   const docRef = doc(db, "users", docId); // Specify the collection and document ID
