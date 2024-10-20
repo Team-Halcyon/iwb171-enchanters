@@ -20,18 +20,31 @@ type NewProject record {|
     string projectName;
     string description;
     decimal amount;
-    time:Date deadline;
+    string deadline;
     string phone;
     string[] images;
     string[] evidence;
     string projectType;
     Bank bankDetails;
     boolean verified;
-    string owner;
-    time:Date createdDate;
-    string? city;
-    string? district;
-    string? address;
+    int owner;
+    string createdDate;
+|};
+
+type NewHomeProject record {| 
+    string projectName;
+    string description;
+    string deadline;
+    string phone;
+    string[] images;
+    string projectType;
+    Bank bankDetails;
+    boolean verified;
+    int owner;
+    string createdDate;
+    string city;
+    string district;
+    string address;
 |};
 
 type Project record {| 
@@ -43,7 +56,7 @@ type Project record {|
     string[] images;
     Bank bank;
     boolean verified;
-    string owner;
+    int owner;
     decimal raised;
 |};
 
@@ -70,3 +83,12 @@ type ErrorDetails record {|
     string message; 
     string details; 
 |};
+
+type User record {
+    string name;
+    string email;
+    string password;
+    string mobile;
+    string nic;
+    string userType = "individual";
+};

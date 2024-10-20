@@ -82,7 +82,7 @@ const HomeRegistration = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:9090/fundraising/newProject",
+        "http://localhost:9090/fundraising/newHomeProject",
         projectData,
         {
           headers: { "Content-Type": "application/json" },

@@ -12,13 +12,11 @@ function initDbClient() returns mysql:Client|error =>
 
 listener http:Listener fundraisingListener = new (9090);
 
-configurable string gDriveAccessToken = ?;
-configurable string gDriveFolderId = ?;
 
 @http:ServiceConfig {
         cors: {
             allowOrigins: ["http://localhost:3000"], 
-            allowHeaders: ["*"], 
+            allowHeaders: ["content-type", "authorization"], 
             allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "UPDATE"], 
             allowCredentials: false,
             exposeHeaders: [],
@@ -34,8 +32,8 @@ service /fundraising on fundraisingListener {
     }
     resource function post newProject(NewProject payload) returns http:Created|error {
         // Insert into Project table
-        _ = check fundraisingDb->execute(`INSERT INTO Project (user_id, project_type, create_timestamp, account_no, bankDetails, branch, account_name, phone_number)
-                VALUES (${payload.owner}, ${payload.projectType}, ${payload.createdDate}$, ${payload.bankDetails.accNumber}, ${payload.bankDetails.bank}, ${payload.bankDetails.branch}, ${payload.bankDetails.bankHolder}, ${payload.phone});`);
+        _ = check fundraisingDb->execute(`INSERT INTO Project (user_id, project_type, create_timestamp, account_no, bank, branch, account_name, phone_number)
+                VALUES (${payload.owner}, ${payload.projectType}, ${payload.createdDate}, ${payload.bankDetails.accNumber}, ${payload.bankDetails.bank}, ${payload.bankDetails.branch}, ${payload.bankDetails.bankHolder}, ${payload.phone});`);
 
         // Fetch last inserted project ID
         int result = check fundraisingDb->queryRow(`SELECT LAST_INSERT_ID() AS project_id`, int);
@@ -48,7 +46,21 @@ service /fundraising on fundraisingListener {
         } else if payload.projectType == "disaster relief" {
             _ = check fundraisingDb->execute(`INSERT INTO DisasterRelief (project_id, project_name, image, description, goal_amount, deadline)
                 VALUES (${result}, ${payload.projectName}, ${payload.images[0]}, ${payload.description}, ${payload.amount}, ${payload.deadline});`);
-        } else if payload.projectType == "children" || payload.projectType == "adults" {
+        } 
+
+        return http:CREATED;
+    }
+
+    resource function post newHomeProject(NewHomeProject payload) returns http:Created|error {
+        // Insert into Project table
+        _ = check fundraisingDb->execute(`INSERT INTO Project (user_id, project_type, create_timestamp, account_no, bank, branch, account_name, phone_number)
+                VALUES (${payload.owner}, ${payload.projectType}, ${payload.createdDate}, ${payload.bankDetails.accNumber}, ${payload.bankDetails.bank}, ${payload.bankDetails.branch}, ${payload.bankDetails.bankHolder}, ${payload.phone});`);
+
+        // Fetch last inserted project ID
+        int result = check fundraisingDb->queryRow(`SELECT LAST_INSERT_ID() AS project_id`, int);
+        
+
+        if payload.projectType == "children" || payload.projectType == "adults" {
             _ = check fundraisingDb->execute(`INSERT INTO Home (project_id, home_name, hometype, description, address, city, district, phone_number_home)
                 VALUES (${result}, ${payload.projectName}, ${payload.projectType}, ${payload.description}, ${payload.address}, ${payload.city}, ${payload.district}, ${payload.phone});`);
         }
