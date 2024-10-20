@@ -28,6 +28,37 @@ type NewProject record {|
     Bank bank;
     boolean verified;
     string owner;
+    time:Date createdDate;
+    decimal raised;
+    string city;
+    string district;
+    string address;
+|};
+
+type Project record {| 
+    string projectName;
+    string description;
+    decimal amount;
+    time:Date deadline;
+    string phone;
+    string[] images;
+    Bank bank;
+    boolean verified;
+    string owner;
+    decimal raised;
+|};
+
+type HomeProject record {|
+    boolean verified;                       
+    decimal raised;              
+    Bank bank;                                 
+    string homeName;                       
+    string address;                       
+    string city;                
+    string district;            
+    string phoneNumberHome;     
+    string description;         
+    string image;               
 |};
 
 type ProjectNotFound record {| 

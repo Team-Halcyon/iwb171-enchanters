@@ -1,35 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useFirebase } from '../firebaseContext';
-import { collection, onSnapshot } from "firebase/firestore";
 import styles from '../styles/elders.module.css';
 import 'boxicons';
 
 const ChildernHome = () => {
-    const { db } = useFirebase(); // Access Firestore instance from context
     const [projects, setProjects] = useState([]);
 
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(
-            collection(db, "Children's Home"),
-            (snapshot) => {
-                const projectsArray = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    name: doc.data().homeName,
-                    address: doc.data().address,
-                    description: doc.data().description,
-                    owner: doc.data().owner,
-                    imageUrls: doc.data().images,
-                }));
-
-                setProjects(projectsArray);
-                console.log(projectsArray);
+        const fetchChildrenHomes = async () => {
+          try {
+            const response = await fetch('http://localhost:9090/fundraising/childrenHomes');
+            if (!response.ok) {
+              throw new Error('Failed to fetch events');
             }
-        );
-
-        // Cleanup function to unsubscribe from the listener when the component unmounts
-        return () => unsubscribe();
-    }, [db]);
+            const data = await response.json();
+            setProjects(data); 
+          } catch (error) {
+            console.error('Error fetching projects', error);
+          }
+        };
+    
+        fetchChildrenHomes(); 
+      }, []); 
 
     return (
         <div>
@@ -40,13 +32,13 @@ const ChildernHome = () => {
             <section className={styles.product_container}>
                 {projects.map((project) => (
                     <div className={styles.box} key={project.id}>
-                        {project.imageUrls && project.imageUrls.length > 0 ? (
-                            <img src={project.imageUrls[0]} alt={project.name} className={styles.project_image} />
+                        {project.image && project.image.length > 0 ? (
+                            <img src={project.image[0]} alt={project.homeName} className={styles.project_image} />
                         ) : (
                             <img src="/child.jpeg" alt="default_project_image" className={styles.project_image} />
                         )}
                         <div className={styles.content}>
-                            <h3>{project.name}</h3>
+                            <h3>{project.homeName}</h3>
                             <span ><box-icon type='solid' name='map'></box-icon>{project.address}</span>
 
                         </div>

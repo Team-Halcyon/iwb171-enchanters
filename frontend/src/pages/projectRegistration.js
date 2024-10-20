@@ -2,19 +2,16 @@ import React, { useState } from 'react';
 import styles from '../styles/projectRegistration.module.css';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-import { useNewProject } from "../../hooks/newProject";
 
 const ProjectRegistration = () => {
-    const { project, loading, error, newProject } = useNewProject();
 
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(0);
-    const [raised, setRaised] = useState('0');
     const [deadline, setDeadline] = useState('');
     const [phone, setPhone] = useState('');
     const [images, setImages] = useState([]);
-    const [evidence, setEvidence] = useState('');
+    const [evidence, setEvidence] = useState([]);
     const [bankHolder, setBankHolder] = useState('');
     const [bank, setBank] = useState('');
     const [branch, setBranch] = useState('');
@@ -22,8 +19,7 @@ const ProjectRegistration = () => {
     const [projectType, setProjectType] = useState('');
     const [checkbox, setCheckbox] = useState(false);
     const today = moment().format('YYYY-MM-DD');
-
-    // const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleProject = async (e) => {
         e.preventDefault();
@@ -48,7 +44,7 @@ const ProjectRegistration = () => {
             return;
         }
 
-        //setLoading(true);
+        setLoading(true);
 
         try {
             // Image upload - converting to base64 strings for Ballerina API
@@ -81,11 +77,26 @@ const ProjectRegistration = () => {
                     accNumber: accNumber
                 },
                 verified: false,
+                createdDate: today,
                 owner: "user_uid_placeholder", // Replace with real user ID
             };
 
              
-            await newProject(projectData);
+            const response = await fetch('http://localhost:9090/fundraising/newProject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(projectData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to register project');
+            }
+
+            const result = await response.json();
+            console.log('Project registered successfully:', result);
+            toast.success('Project registered successfully!');
             
 
         } catch (error) {
