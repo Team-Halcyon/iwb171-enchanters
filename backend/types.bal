@@ -84,11 +84,3 @@ type ErrorDetails record {|
     string details; 
 |};
 
-type User record {
-    string name;
-    string email;
-    string password;
-    string mobile;
-    string nic;
-    string userType = "individual";
-};
