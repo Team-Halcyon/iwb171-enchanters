@@ -19,6 +19,12 @@
 
 **අත්වැල** was developed with empathy and a focus on promoting **social wellness**. Our goal is to make fundraising transparent, trustworthy, and efficient.
 
+## 🎥 Video Demo
+Check out the demo of our project on YouTube:
+
+[![අත්වැල - Fundraising Platform](https://img.youtube.com/vi/3XZqFv48j0Y/0.jpg)](https://youtu.be/3XZqFv48j0Y?feature=shared)
+
+
 ## 🖥️ Project Setup
 
 ### Prerequisites
